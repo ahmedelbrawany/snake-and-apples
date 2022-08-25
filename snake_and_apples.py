@@ -64,7 +64,18 @@ while not exit_game:
 
 
     head_x += x_movement
+    if head_x > 800:
+        head_x = 0
+
+    if head_x < 0:
+        head_x = 800
+
     head_y += y_movement
+    if head_y > 600:
+        head_y = 0
+
+    if head_y < 0:
+        head_y = 600
 
     #filling the whole game display with the color blue
     game_display.fill(LIGHTBLUE)
