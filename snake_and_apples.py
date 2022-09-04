@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import time
 
 
 #-------------- initialize pygame parameters
@@ -23,14 +24,28 @@ game_display = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
 
 #------------------ game loop ----------------------
 exit_game = 0
-head_x = 300
-head_y = 300
+head_x = WINDOW_SIZE[0] /2
+head_y = WINDOW_SIZE[1] /2
 
 x_movement = 0
 y_movement = 0
 
+movement = 2
+snake_w = 10
+snake_h = 10
+
 clock = pygame.time.Clock()
 FPS = 30
+font = pygame.font.SysFont(None, 30)
+def message_display(msg, color):
+    screen_txt = font.render(msg, True, color)
+    game_display.blit(screen_txt, [WINDOW_SIZE[0]/2 - 30, WINDOW_SIZE[1]/2])
+    pygame.display.update()
+    time.sleep(2)
+
+
+
+
 while not exit_game:
     #--------------------- event handling -----------------------
     for event in pygame.event.get():
@@ -40,20 +55,24 @@ while not exit_game:
             break
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                x_movement = -2
-                y_movement = 0
+                if x_movement <= 0:
+                    x_movement = -movement
+                    y_movement = 0
 
-            if event.key == pygame.K_RIGHT:
-                x_movement= 2
-                y_movement = 0
+            elif event.key == pygame.K_RIGHT:
+                if x_movement >= 0:
+                    x_movement= movement
+                    y_movement = 0
 
-            if event.key == pygame.K_UP:
-                y_movement = -2
-                x_movement = 0
+            elif event.key == pygame.K_UP:
+                if y_movement <= 0:
+                    y_movement = -movement
+                    x_movement = 0
 
-            if event.key == pygame.K_DOWN:
-                y_movement = 2
-                x_movement = 0
+            elif event.key == pygame.K_DOWN:
+                if y_movement >= 0 :
+                    y_movement = movement
+                    x_movement = 0
 
         # if event.type == pygame.KEYUP:
         #     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -64,24 +83,25 @@ while not exit_game:
 
 
     head_x += x_movement
-    if head_x > 800:
+    if head_x > WINDOW_SIZE[0]:
         head_x = 0
+        message_display('You lose', RED)
 
     if head_x < 0:
-        head_x = 800
+        head_x = WINDOW_SIZE[0]
 
     head_y += y_movement
-    if head_y > 600:
+    if head_y > WINDOW_SIZE[1]:
         head_y = 0
 
     if head_y < 0:
-        head_y = 600
+        head_y = WINDOW_SIZE[1]
 
     #filling the whole game display with the color blue
     game_display.fill(LIGHTBLUE)
     #---------------------- drawing rectangles -----------------------
     #drawing rectangles using draw
-    pygame.draw.rect(game_display, BLACK, [head_x,head_y, 10, 10])
+    pygame.draw.rect(game_display, BLACK, [head_x,head_y, snake_w, snake_h])
     #drawing rectangles using fill (this is much faster for graphics)
     game_display.fill(RED, rect=[400,300, 10,10])
 
