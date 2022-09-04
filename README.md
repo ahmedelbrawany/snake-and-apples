@@ -1,2 +1,3 @@
 # snake-and-apples
-simple pygame of the snake and apples game
+  # pygame
+    simple pygame of the snake and apples game
