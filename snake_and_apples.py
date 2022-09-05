@@ -21,92 +21,117 @@ WINDOW_SIZE = (800,600)
 
 game_display = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
 
-
-#------------------ game loop ----------------------
-exit_game = 0
-head_x = WINDOW_SIZE[0] /2
-head_y = WINDOW_SIZE[1] /2
-
-x_movement = 0
-y_movement = 0
-
-movement = 2
-snake_w = 10
-snake_h = 10
-
+#-----------------clock and font-----------------------
 clock = pygame.time.Clock()
 FPS = 30
-font = pygame.font.SysFont(None, 30)
+font = pygame.font.SysFont(None, 25)
+#------------------ game loop ----------------------
+
+
+
 def message_display(msg, color):
     screen_txt = font.render(msg, True, color)
-    game_display.blit(screen_txt, [WINDOW_SIZE[0]/2 - 30, WINDOW_SIZE[1]/2])
+    game_display.blit(screen_txt, [WINDOW_SIZE[0] / 2 - 30, WINDOW_SIZE[1] / 2])
     pygame.display.update()
     time.sleep(2)
 
 
+def game_loop():
+    exit_game = False
+    game_over = False
+    head_x = WINDOW_SIZE[0] /2
+    head_y = WINDOW_SIZE[1] /2
+
+    x_movement = 0
+    y_movement = 0
+
+    movement = 2
+    snake_w = 10
+    snake_h = 10
 
 
-while not exit_game:
-    #--------------------- event handling -----------------------
-    for event in pygame.event.get():
-        print(event)
-        if event.type == QUIT:
-            exit_game = 1
-            break
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                if x_movement <= 0:
-                    x_movement = -movement
-                    y_movement = 0
 
-            elif event.key == pygame.K_RIGHT:
-                if x_movement >= 0:
-                    x_movement= movement
-                    y_movement = 0
+    while not exit_game:
 
-            elif event.key == pygame.K_UP:
-                if y_movement <= 0:
-                    y_movement = -movement
-                    x_movement = 0
+        while game_over:
+            game_display.fill(WHITE)
+            message_display("Game Over if you want to play again click S, to quit click q", RED)
+            for event in pygame.event.get():
+                print(event)
+                if event.type == pygame.QUIT:
+                    exit_game = True
+                    game_over = False
 
-            elif event.key == pygame.K_DOWN:
-                if y_movement >= 0 :
-                    y_movement = movement
-                    x_movement = 0
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        exit_game = True
+                        game_over = False
 
-        # if event.type == pygame.KEYUP:
-        #     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-        #         x_movement = 0
-        #
-        #     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-        #         y_movement = 0
+                    if event.key == pygame.K_s:
+                        game_loop()
+
+        #--------------------- event handling -----------------------
+        for event in pygame.event.get():
+            print(event)
+            if event.type == QUIT:
+                exit_game = 1
+                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    if x_movement <= 0:
+                        x_movement = -movement
+                        y_movement = 0
+
+                elif event.key == pygame.K_RIGHT:
+                    if x_movement >= 0:
+                        x_movement= movement
+                        y_movement = 0
+
+                elif event.key == pygame.K_UP:
+                    if y_movement <= 0:
+                        y_movement = -movement
+                        x_movement = 0
+
+                elif event.key == pygame.K_DOWN:
+                    if y_movement >= 0 :
+                        y_movement = movement
+                        x_movement = 0
+
+            # if event.type == pygame.KEYUP:
+            #     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+            #         x_movement = 0
+            #
+            #     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+            #         y_movement = 0
 
 
-    head_x += x_movement
-    if head_x > WINDOW_SIZE[0]:
-        head_x = 0
-        message_display('You lose', RED)
+        head_x += x_movement
+        if head_x > WINDOW_SIZE[0]:
+            head_x = 0
+            game_over = True
 
-    if head_x < 0:
-        head_x = WINDOW_SIZE[0]
+        if head_x < 0:
+            head_x = WINDOW_SIZE[0]
 
-    head_y += y_movement
-    if head_y > WINDOW_SIZE[1]:
-        head_y = 0
+        head_y += y_movement
+        if head_y > WINDOW_SIZE[1]:
+            head_y = 0
 
-    if head_y < 0:
-        head_y = WINDOW_SIZE[1]
+        if head_y < 0:
+            head_y = WINDOW_SIZE[1]
 
-    #filling the whole game display with the color blue
-    game_display.fill(LIGHTBLUE)
-    #---------------------- drawing rectangles -----------------------
-    #drawing rectangles using draw
-    pygame.draw.rect(game_display, BLACK, [head_x,head_y, snake_w, snake_h])
-    #drawing rectangles using fill (this is much faster for graphics)
-    game_display.fill(RED, rect=[400,300, 10,10])
+        #filling the whole game display with the color blue
+        game_display.fill(LIGHTBLUE)
+        #---------------------- drawing rectangles -----------------------
+        #drawing rectangles using draw
+        pygame.draw.rect(game_display, BLACK, [head_x,head_y, snake_w, snake_h])
+        #drawing rectangles using fill (this is much faster for graphics)
+        game_display.fill(RED, rect=[400,300, 10,10])
 
-    pygame.display.update()
-    clock.tick(FPS)
+        pygame.display.update()
+        clock.tick(FPS)
 
-pygame.quit()
-quit()
+    pygame.quit()
+    quit()
+
+game_loop()
