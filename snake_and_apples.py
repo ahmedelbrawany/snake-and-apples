@@ -1,6 +1,7 @@
 import pygame
-from pygame.locals import *
 import time
+import random
+
 
 
 #-------------- initialize pygame parameters
@@ -29,12 +30,16 @@ font = pygame.font.SysFont(None, 25)
 
 
 
-def message_display(msg, color):
+def message_display(msg, x,y,color):
     screen_txt = font.render(msg, True, color)
-    game_display.blit(screen_txt, [WINDOW_SIZE[0] / 2 - 30, WINDOW_SIZE[1] / 2])
-    pygame.display.update()
-    time.sleep(2)
+    game_display.blit(screen_txt, [x,y])
 
+
+
+def get_apple_coordinates(apple_w, apple_h):
+    x = random.randrange(0, WINDOW_SIZE[0] / 2 - apple_w)
+    y = random.randrange(0, WINDOW_SIZE[1] / 2 - apple_h)
+    return (x, y)
 
 def game_loop():
     exit_game = False
@@ -48,14 +53,18 @@ def game_loop():
     movement = 2
     snake_w = 10
     snake_h = 10
+    apple_w = 10
+    apple_h = 10
 
-
+    apple_x, apple_y = get_apple_coordinates(apple_w, apple_h)
 
     while not exit_game:
 
         while game_over:
             game_display.fill(WHITE)
-            message_display("Game Over if you want to play again click S, to quit click q", RED)
+            message_display("Game Over",WINDOW_SIZE[0] / 2 - 30, WINDOW_SIZE[1] / 2-30, RED)
+            message_display("if you want to play again click S, to quit click q",WINDOW_SIZE[0] / 2 - 180, WINDOW_SIZE[1] / 2 , BLUE)
+            pygame.display.update()
             for event in pygame.event.get():
                 print(event)
                 if event.type == pygame.QUIT:
@@ -70,10 +79,12 @@ def game_loop():
                     if event.key == pygame.K_s:
                         game_loop()
 
+
+
         #--------------------- event handling -----------------------
         for event in pygame.event.get():
             print(event)
-            if event.type == QUIT:
+            if event.type == pygame.QUIT:
                 exit_game = 1
                 break
             if event.type == pygame.KEYDOWN:
@@ -106,27 +117,28 @@ def game_loop():
 
 
         head_x += x_movement
-        if head_x > WINDOW_SIZE[0]:
+        if head_x  > WINDOW_SIZE[0]-snake_w/2:
             head_x = 0
             game_over = True
 
-        if head_x < 0:
-            head_x = WINDOW_SIZE[0]
+        if head_x < 0-snake_w/2:
+            head_x = WINDOW_SIZE[0]-snake_w/2
 
         head_y += y_movement
-        if head_y > WINDOW_SIZE[1]:
+        if head_y > WINDOW_SIZE[1]-snake_w/2:
             head_y = 0
 
-        if head_y < 0:
-            head_y = WINDOW_SIZE[1]
+        if head_y < 0-snake_w/2:
+            head_y = WINDOW_SIZE[1]-snake_w/2
 
         #filling the whole game display with the color blue
         game_display.fill(LIGHTBLUE)
         #---------------------- drawing rectangles -----------------------
         #drawing rectangles using draw
+        pygame.draw.rect(game_display, RED, [apple_x, apple_y, apple_w, apple_h])
         pygame.draw.rect(game_display, BLACK, [head_x,head_y, snake_w, snake_h])
         #drawing rectangles using fill (this is much faster for graphics)
-        game_display.fill(RED, rect=[400,300, 10,10])
+        #game_display.fill(RED, rect=[400,300, 10,10])
 
         pygame.display.update()
         clock.tick(FPS)
