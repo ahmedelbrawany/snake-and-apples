@@ -24,7 +24,7 @@ game_display = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
 
 #-----------------clock and font-----------------------
 clock = pygame.time.Clock()
-FPS = 30
+FPS = 8
 font = pygame.font.SysFont(None, 25)
 #------------------ game loop ----------------------
 
@@ -37,8 +37,8 @@ def message_display(msg, x,y,color):
 
 
 def get_apple_coordinates(apple_w, apple_h):
-    x = random.randrange(0, WINDOW_SIZE[0] / 2 - apple_w)
-    y = random.randrange(0, WINDOW_SIZE[1] / 2 - apple_h)
+    x = round(random.randrange(0, WINDOW_SIZE[0] / 2 - apple_w)/10) *10
+    y = round(random.randrange(0, WINDOW_SIZE[1] / 2 - apple_h)/10)*10
     return (x, y)
 
 def game_loop():
@@ -50,7 +50,7 @@ def game_loop():
     x_movement = 0
     y_movement = 0
 
-    movement = 2
+    movement = 10
     snake_w = 10
     snake_h = 10
     apple_w = 10
@@ -122,14 +122,15 @@ def game_loop():
             game_over = True
 
         if head_x < 0-snake_w/2:
-            head_x = WINDOW_SIZE[0]-snake_w/2
+            head_x = round((WINDOW_SIZE[0]-snake_w/2)/10)*10
 
         head_y += y_movement
         if head_y > WINDOW_SIZE[1]-snake_w/2:
             head_y = 0
 
         if head_y < 0-snake_w/2:
-            head_y = WINDOW_SIZE[1]-snake_w/2
+            head_y = round((WINDOW_SIZE[1]-snake_w/2)/10)*10
+
 
         #filling the whole game display with the color blue
         game_display.fill(LIGHTBLUE)
@@ -141,6 +142,9 @@ def game_loop():
         #game_display.fill(RED, rect=[400,300, 10,10])
 
         pygame.display.update()
+        if head_x==apple_x and head_y==apple_y:
+            apple_x, apple_y = get_apple_coordinates(apple_w, apple_h)
+
         clock.tick(FPS)
 
     pygame.quit()
