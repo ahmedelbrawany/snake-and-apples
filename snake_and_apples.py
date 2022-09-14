@@ -41,6 +41,10 @@ def get_apple_coordinates(apple_w, apple_h):
     y = round(random.randrange(0, WINDOW_SIZE[1] / 2 - apple_h)/10)*10
     return (x, y)
 
+def draw_snake(snake_w, snake_list):
+    for x,y in snake_list:
+        pygame.draw.rect(game_display, BLACK, [x, y, snake_w, snake_w])
+
 def game_loop():
     exit_game = False
     game_over = False
@@ -53,6 +57,9 @@ def game_loop():
     movement = 10
     snake_w = 10
     snake_h = 10
+    snake_list = [(head_x, head_y)]
+    snake_len = 1
+
     apple_w = 10
     apple_h = 10
 
@@ -119,7 +126,6 @@ def game_loop():
         head_x += x_movement
         if head_x  > WINDOW_SIZE[0]-snake_w/2:
             head_x = 0
-            game_over = True
 
         if head_x < 0-snake_w/2:
             head_x = round((WINDOW_SIZE[0]-snake_w/2)/10)*10
@@ -137,13 +143,17 @@ def game_loop():
         #---------------------- drawing rectangles -----------------------
         #drawing rectangles using draw
         pygame.draw.rect(game_display, RED, [apple_x, apple_y, apple_w, apple_h])
-        pygame.draw.rect(game_display, BLACK, [head_x,head_y, snake_w, snake_h])
+        snake_list.insert(0, (head_x, head_y))
+        snake_list = snake_list[0: snake_len]
+        draw_snake(snake_w, snake_list)
         #drawing rectangles using fill (this is much faster for graphics)
         #game_display.fill(RED, rect=[400,300, 10,10])
 
         pygame.display.update()
         if head_x==apple_x and head_y==apple_y:
             apple_x, apple_y = get_apple_coordinates(apple_w, apple_h)
+            snake_list.append((head_x, head_y))
+            snake_len +=1
 
         clock.tick(FPS)
 
