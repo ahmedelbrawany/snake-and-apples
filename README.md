@@ -12,4 +12,4 @@
 
 	Have fun... 
 # Note
-	the game is still uder development and is not finished yet. 
+	the game is still under development and is not finished yet. 
